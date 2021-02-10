@@ -12,7 +12,7 @@ class User extends Database {
     const sql = `UPDATE ${this.table} SET ? WHERE id = ?`
 
     return new Promise((resolve, reject) => {
-      const db = this.db.query(sql, [{ pin }, id], (err, results) => {
+      this.db.query(sql, [{ pin }, id], (err, results) => {
         if (err) {
           return reject(err)
         } else if (results.affectedRows < 1) {
@@ -21,7 +21,6 @@ class User extends Database {
           resolve(true)
         }
       })
-      console.log(db.sql)
     })
   }
 
@@ -32,14 +31,13 @@ class User extends Database {
       : `SELECT * FROM ${this.table}`
 
     return new Promise((resolve, reject) => {
-      const db = this.db.query(sql, (err, results) => {
+      this.db.query(sql, (err, results) => {
         if (err) {
           return reject(err)
         } else {
           resolve(results)
         }
       })
-      console.log(db.sql)
     })
   }
 }
