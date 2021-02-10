@@ -11,12 +11,21 @@ const authMiddleware = require('../middlewares/auth')
 // init router
 const router = express.Router()
 
+router.post(
+  '/auth/pin',
+  authMiddleware.checkId,
+  authMiddleware.isPinEmpty,
+  authMiddleware.isPinNumber,
+  authMiddleware.isLength,
+  autoController.createPin
+)
+
 router.patch(
   '/auth/pin/:id',
   authMiddleware.isPinEmpty,
   authMiddleware.isPinNumber,
   authMiddleware.isLength,
-  autoController.createPin
+  autoController.changePin
 )
 
 module.exports = router

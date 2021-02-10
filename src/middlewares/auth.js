@@ -1,7 +1,27 @@
 // ===== Auth Middleware
 // import modules
 const response = require('../helpers/response')
-const { check, validationResult } = require('express-validator')
+const { check, validationResult, query } = require('express-validator')
+
+exports.checkId = [
+  check('id', "Id can't be empty")
+    .notEmpty(),
+  check('id', 'Id must be a number')
+    .isNumeric(),
+  query('id', 'Id must be greater than 0')
+    .isLength({
+      min: 1
+    }),
+  (req, res, next) => {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+      return response(res, 400, false, errors.array()[0].msg)
+    }
+
+    return next()
+  }
+]
 
 exports.isPinEmpty = [
   check('pin', "Pin can't be empty")
