@@ -18,10 +18,10 @@ exports.isPinEmpty = [
 ]
 
 exports.isLength = [
-  check('pin', 'The minimum length of the pin is 5 digits and a maximum of 8 digits')
+  check('pin', 'Pin length must be 6 digits')
     .isLength({
-      min: 5,
-      max: 8
+      min: 6,
+      max: 6
     }),
   (req, res, next) => {
     const errors = validationResult(req)
