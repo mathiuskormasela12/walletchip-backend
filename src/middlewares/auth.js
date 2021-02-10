@@ -23,6 +23,47 @@ exports.checkId = [
   }
 ]
 
+exports.checkEmail = [
+  check('email', "Email can't be empty")
+    .notEmpty(),
+  check('email', 'Incorrect email')
+    .isEmail(),
+  (req, res, next) => {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+      return response(res, 400, false, errors.array()[0].msg)
+    }
+
+    return next()
+  }
+]
+
+exports.checkPassword = [
+  query('hash', "Hash can't be empty")
+    .notEmpty(),
+  check('password', "Password can't be empty")
+    .notEmpty(),
+  check('repeatPassword', "Repeat password can't be empty")
+    .notEmpty()
+    .custom((val, { req }) => {
+      if (val !== req.body.password) {
+        throw new Error("Password don't match")
+      } else {
+        return val
+      }
+    }),
+  (req, res, next) => {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+      return response(res, 400, false, errors.array()[0].msg)
+    }
+
+    return next()
+  }
+]
+
 exports.isPinEmpty = [
   check('pin', "Pin can't be empty")
     .notEmpty(),

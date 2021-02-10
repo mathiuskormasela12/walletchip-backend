@@ -28,4 +28,16 @@ router.patch(
   autoController.changePin
 )
 
+router.post(
+  '/auth/password',
+  authMiddleware.checkEmail,
+  autoController.getResetPasswordLink
+)
+
+router.patch(
+  '/auth/password',
+  authMiddleware.checkPassword,
+  autoController.resetPassword
+)
+
 module.exports = router
