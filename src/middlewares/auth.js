@@ -22,7 +22,7 @@ exports.authCheck = (req, res, next) => {
   })
 }
 
-exports.isFieldEmpty = [
+exports.isFieldsEmpty = [
   check('password', "password can't be empty")
     .notEmpty(),
   check('email', "email can't be empty")
@@ -40,7 +40,29 @@ exports.isFieldEmpty = [
   }
 ]
 
-//
+exports.isFieldsLength = [
+  check('password', 'Password must be at least 6 characters')
+    .isLength({
+      min: 6
+    }),
+  check('username', 'Username must be at least 6 characters')
+    .isLength({
+      min: 6
+    }),
+  check('email', 'Email must be at least 6 characters')
+    .isLength({
+      min: 6
+    }),
+  (req, res, next) => {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+      return response(res, 400, false, errors.array()[0].msg)
+    }
+
+    return next()
+  }
+]
 
 exports.isPinEmpty = [
   check('pin', "Pin can't be empty")

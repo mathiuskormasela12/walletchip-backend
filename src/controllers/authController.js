@@ -38,8 +38,9 @@ exports.createPin = async (req, res) => {
 
 exports.register = async (req, res) => {
   const { username, email, password } = req.body
-  const isExists = await userModel.getUsersByConditionAsync({ email })
-  if (isExists.length < 1) {
+  const isUserNameExists = await userModel.getUsersByConditionAsync({ username })
+  const isEmailExists = await userModel.getUsersByConditionAsync({ email })
+  if (isUserNameExists.length < 1 && isEmailExists.length < 1) {
     const salt = await bcrypt.genSalt()
     const encryptedPassword = await bcrypt.hash(password, salt)
     const createUser = await userModel.createUserAsync({ username, email, password: encryptedPassword })
@@ -58,9 +59,42 @@ exports.register = async (req, res) => {
       })
     }
   } else {
-    return res.status(400).json({
-      success: false,
-      message: 'Register Failed, email already exists'
-    })
+    if (isUserNameExists.length > 0 && isEmailExists.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Register Failed, username and email already exists'
+      })
+    } else if (isUserNameExists.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Register Failed, username already exists'
+      })
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: 'Register Failed, email already exists'
+      })
+    }
   }
+}
+
+exports.login = async (req, res) => {
+  const { email, password } = req.body
+  const existingUser = await userModel.getUsersByConditionAsync({ email })
+  if (existingUser.length > 0) {
+    const compare = await bcrypt.compare(password, existingUser[0].password)
+    if (compare) {
+      const { id } = existingUser[0]
+      const token = jwt.sign({ id }, APP_KEY)
+      return res.json({
+        success: true,
+        message: 'Login successfully',
+        token
+      })
+    }
+  }
+  return res.status(401).json({
+    success: false,
+    message: 'Wrong email or password'
+  })
 }

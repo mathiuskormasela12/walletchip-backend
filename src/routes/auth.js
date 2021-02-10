@@ -3,7 +3,7 @@
 const express = require('express')
 
 // import all controllers
-const autoController = require('../controllers/authController')
+const authController = require('../controllers/authController')
 
 // import all middlewares
 const authMiddleware = require('../middlewares/auth')
@@ -16,12 +16,18 @@ router.patch(
   authMiddleware.isPinEmpty,
   authMiddleware.isPinNumber,
   authMiddleware.isLength,
-  autoController.createPin
+  authController.createPin
 )
 
 router.post(
   '/auth/register',
-  autoController.register
+  authMiddleware.isFieldsEmpty,
+  authMiddleware.isFieldsLength,
+  authController.register
 )
+
+router.post(
+  '/auth/login',
+  authController.login)
 
 module.exports = router
