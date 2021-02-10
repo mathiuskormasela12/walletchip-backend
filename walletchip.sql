@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Waktu pembuatan: 10 Feb 2021 pada 08.12
+-- Waktu pembuatan: 10 Feb 2021 pada 09.51
 -- Versi server: 10.4.17-MariaDB
 -- Versi PHP: 8.0.1
 
@@ -53,7 +53,7 @@ CREATE TABLE `users` (
   `email` varchar(255) NOT NULL,
   `balance` int(11) NOT NULL DEFAULT 0,
   `password` varchar(255) NOT NULL,
-  `pin` varchar(255) NOT NULL,
+  `pin` varchar(255) DEFAULT NULL,
   `picture` varchar(255) NOT NULL DEFAULT 'no_photo.png',
   `phone` varchar(255) DEFAULT NULL,
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
