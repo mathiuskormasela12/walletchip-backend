@@ -16,9 +16,9 @@ module.exports = (res, status, success, message, results, ...optional) => {
       pageInfo: {
         totalData: totalData && totalData,
         totalPage: totalData && totalPage,
-        currentPage: totalData && currentPage,
-        prevLink: totalData && prevLink,
-        nextLink: totalData && nextLink
+        currentPage: currentPage && currentPage,
+        prevLink: prevLink && prevLink,
+        nextLink: nextLink && nextLink
       }
     })
   } else {
