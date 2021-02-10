@@ -1,6 +1,8 @@
 // ==== import module
 const bcrypt = require('bcryptjs')
 const response = require('../helpers/response')
+const jwt = require('jsonwebtoken')
+const { APP_KEY } = process.env
 
 // ===== import models
 const userModel = require('../models/User')
@@ -31,5 +33,34 @@ exports.createPin = async (req, res) => {
   } catch (err) {
     response(res, 500, false, 'Failed to create pin, server error')
     throw new Error(err)
+  }
+}
+
+exports.register = async (req, res) => {
+  const { username, email, password } = req.body
+  const isExists = await userModel.getUsersByConditionAsync({ email })
+  if (isExists.length < 1) {
+    const salt = await bcrypt.genSalt()
+    const encryptedPassword = await bcrypt.hash(password, salt)
+    const createUser = await userModel.createUserAsync({ username, email, password: encryptedPassword })
+    if (createUser.insertId > 0) {
+      const { insertId } = createUser
+      const token = jwt.sign({ insertId }, APP_KEY)
+      return res.json({
+        success: true,
+        message: 'Register success!',
+        token
+      })
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: 'Register Failed'
+      })
+    }
+  } else {
+    return res.status(400).json({
+      success: false,
+      message: 'Register Failed, email already exists'
+    })
   }
 }

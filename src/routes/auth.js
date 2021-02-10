@@ -19,4 +19,9 @@ router.patch(
   autoController.createPin
 )
 
+router.post(
+  '/auth/register',
+  autoController.register
+)
+
 module.exports = router
