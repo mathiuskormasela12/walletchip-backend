@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Waktu pembuatan: 10 Feb 2021 pada 09.51
+-- Waktu pembuatan: 10 Feb 2021 pada 10.11
 -- Versi server: 10.4.17-MariaDB
 -- Versi PHP: 8.0.1
 
@@ -54,11 +54,21 @@ CREATE TABLE `users` (
   `balance` int(11) NOT NULL DEFAULT 0,
   `password` varchar(255) NOT NULL,
   `pin` varchar(255) DEFAULT NULL,
+  `verified` tinyint(1) NOT NULL,
   `picture` varchar(255) NOT NULL DEFAULT 'no_photo.png',
   `phone` varchar(255) DEFAULT NULL,
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
   `updatedAt` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data untuk tabel `users`
+--
+
+INSERT INTO `users` (`id`, `first_name`, `last_name`, `username`, `email`, `balance`, `password`, `pin`, `verified`, `picture`, `phone`, `createdAt`, `updatedAt`) VALUES
+(1, NULL, NULL, 'mathius', 'mathiuskormasela12@gmail.com', 0, '123', NULL, 0, 'no_photo.png', NULL, '2021-02-10 09:09:19', '0000-00-00 00:00:00'),
+(2, NULL, NULL, 'sam', 'samdicova@gmail.com', 0, '3123', NULL, 0, 'no_photo.png', NULL, '2021-02-10 09:09:19', '0000-00-00 00:00:00'),
+(3, NULL, NULL, 'matthew', 'mathiuskormasela12rpl@gmail.com', 0, '123', NULL, 0, 'no_photo.png', NULL, '2021-02-10 09:09:19', '0000-00-00 00:00:00');
 
 --
 -- Indexes for dumped tables
@@ -94,7 +104,7 @@ ALTER TABLE `transactions`
 -- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
