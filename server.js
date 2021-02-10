@@ -45,7 +45,7 @@ app.use(express.static(path.join(__dirname, './public')))
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 
-app.use('/api', require('./src/routes/routes'))
+app.use('/api', require('./src/routes/auth'))
 
 app.listen(PORT, () => {
   console.log(`Apps running on port ${PORT}`)
