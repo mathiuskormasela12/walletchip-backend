@@ -35,7 +35,7 @@ router.post(
 )
 
 router.patch(
-  '/auth/password',
+  '/auth/password/:id',
   authMiddleware.checkPassword,
   autoController.resetPassword
 )

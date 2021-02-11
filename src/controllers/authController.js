@@ -118,9 +118,12 @@ exports.getResetPasswordLink = async (req, res) => {
 
 exports.resetPassword = async (req, res) => {
   const {
-    id,
     email
   } = req.body
+
+  const {
+    id
+  } = req.params
 
   try {
     const password = await bcrypt.hash(req.body.password, 8)

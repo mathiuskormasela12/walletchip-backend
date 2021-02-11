@@ -40,14 +40,10 @@ exports.checkEmail = [
 ]
 
 exports.checkPassword = [
-  check('id', "Id can't be empty")
-    .notEmpty(),
   check('password', "Password can't be empty")
     .notEmpty(),
   check('email', "Email can't be empty")
     .notEmpty(),
-  check('id', 'Id must be integer')
-    .isInt(),
   check('email', 'Incorrect email')
     .isEmail(),
   check('password', 'Password length min 6 character')
