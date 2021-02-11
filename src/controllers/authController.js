@@ -32,18 +32,18 @@ exports.createPin = async (req, res) => {
               return response(res, 200, true, 'Success to create pin')
             }
           } catch (err) {
-            response(res, 500, false, 'Failed to create pin, server error')
-            throw new Error(err)
+            console.log(err)
+            return response(res, 500, false, 'Failed to create pin, server error')
           }
         }
       } catch (err) {
-        response(res, 500, false, 'Failed to create pin, server error')
-        throw new Error(err)
+        console.log(err)
+        return response(res, 500, false, 'Failed to create pin, server error')
       }
     }
   } catch (err) {
-    response(res, 500, false, 'Failed to create pin, server error')
-    throw new Error(err)
+    console.log(err)
+    return response(res, 500, false, 'Failed to create pin, server error')
   }
 }
 
@@ -66,12 +66,12 @@ exports.changePin = async (req, res) => {
           return response(res, 200, true, 'Success to change pin')
         }
       } catch (err) {
-        response(res, 500, false, 'Failed to change pin, server error')
-        throw new Error(err)
+        console.log(err)
+        return response(res, 500, false, 'Failed to change pin, server error')
       }
     }
   } catch (err) {
-    response(res, 500, false, 'Failed to change pin, server error')
-    throw new Error(err)
+    console.log(err)
+    return response(res, 500, false, 'Failed to change pin, server error')
   }
 }
