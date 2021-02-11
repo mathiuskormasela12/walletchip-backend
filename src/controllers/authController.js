@@ -1,9 +1,9 @@
 // ==== import module
 const bcrypt = require('bcryptjs')
-const response = require('../helpers/response')
 const jwt = require('jsonwebtoken')
-const { SECRET } = process.env
 const mailer = require('../helpers/mailer')
+const response = require('../helpers/response')
+const { SECRET } = process.env
 
 // ===== import models
 const userModel = require('../models/User')
@@ -35,18 +35,18 @@ exports.createPin = async (req, res) => {
               return response(res, 200, true, 'Success to create pin')
             }
           } catch (err) {
-            response(res, 500, false, 'Failed to create pin, server error')
-            throw new Error(err)
+            console.log(err)
+            return response(res, 500, false, 'Failed to create pin, server error')
           }
         }
       } catch (err) {
-        response(res, 500, false, 'Failed to create pin, server error')
-        throw new Error(err)
+        console.log(err)
+        return response(res, 500, false, 'Failed to create pin, server error')
       }
     }
   } catch (err) {
-    response(res, 500, false, 'Failed to create pin, server error')
-    throw new Error(err)
+    console.log(err)
+    return response(res, 500, false, 'Failed to create pin, server error')
   }
 }
 
@@ -67,7 +67,8 @@ exports.changePin = async (req, res) => {
           return response(res, 200, true, 'Success to change pin')
         }
       } catch (err) {
-        response(res, 500, false, 'Failed to change pin, server error')
+        console.log(err)
+        return response(res, 500, false, 'Failed to change pin, server error')
       }
     }
   } catch (err) {
@@ -156,8 +157,32 @@ exports.getResetPasswordLink = async (req, res) => {
       return response(res, 200, true, 'Please check your email for reset your password')
     }
   } catch (err) {
-    response(res, 500, false, 'Failed to send reset password link, server error')
-    throw new Error(err)
+    console.log(err)
+    return response(res, 500, false, 'Failed to send reset password link, server error')
+  }
+}
+
+exports.resetPassword = async (req, res) => {
+  const {
+    email
+  } = req.body
+
+  const {
+    id
+  } = req.params
+
+  try {
+    const password = await bcrypt.hash(req.body.password, 8)
+    const results = await userModel.updateByCondition({ password }, { id, email })
+
+    if (!results) {
+      return response(res, 400, false, 'Failed to reset password')
+    } else {
+      return response(res, 200, false, 'Successfully to reset password')
+    }
+  } catch (err) {
+    console.log(err)
+    return response(res, 500, false, 'Failed to reset password, server error')
   }
 }
 

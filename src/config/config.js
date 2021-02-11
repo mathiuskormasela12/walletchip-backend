@@ -14,5 +14,15 @@ module.exports = {
       user: EMAIL,
       pass: EMAIL_PASSWORD
     }
-  }
+  },
+  validSort: [
+    'id',
+    'username',
+    'email',
+    'phone',
+    'first_name',
+    'last_name',
+    'picture',
+    'createdAt',
+    '']
 }

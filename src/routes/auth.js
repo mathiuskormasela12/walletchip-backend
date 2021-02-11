@@ -56,4 +56,16 @@ router.patch(
   authController.activateAccount
 )
 
+router.post(
+  '/auth/password',
+  authMiddleware.checkEmail,
+  authController.getResetPasswordLink
+)
+
+router.patch(
+  '/auth/password/:id',
+  authMiddleware.checkPassword,
+  authController.resetPassword
+)
+
 module.exports = router
