@@ -104,7 +104,7 @@ exports.getResetPasswordLink = async (req, res) => {
         'Forgot Password',
         `<div>
           <h3>Please click link below to reset your password</h3>
-          <a href="${process.env.APP_URL}/auth/password?hash=${hash}">Click Me</a>
+          <a href="${process.env.REACT_APP_URL}/auth/forgot/reset-password/${hash}">Click Me</a>
         </div>`
       )
 
@@ -118,26 +118,21 @@ exports.getResetPasswordLink = async (req, res) => {
 
 exports.resetPassword = async (req, res) => {
   const {
-    SECRET
-  } = process.env
+    id,
+    email
+  } = req.body
 
   try {
-    const { id, email } = jwt.verify(req.query.hash, SECRET)
-    try {
-      const password = await bcrypt.hash(req.body.password, 8)
-      const results = await userModel.updateByCondition({ password }, { id, email })
+    const password = await bcrypt.hash(req.body.password, 8)
+    const results = await userModel.updateByCondition({ password }, { id, email })
 
-      if (!results) {
-        return response(res, 400, false, 'Failed to reset password')
-      } else {
-        return response(res, 200, false, 'Successfully to reset password')
-      }
-    } catch (error) {
-      response(res, 500, false, 'Failed to reset password, server error')
-      throw new Error(error)
+    if (!results) {
+      return response(res, 400, false, 'Failed to reset password')
+    } else {
+      return response(res, 200, false, 'Successfully to reset password')
     }
   } catch (error) {
-    response(res, 500, false, `${error.message}`)
+    response(res, 500, false, 'Failed to reset password, server error')
     throw new Error(error)
   }
 }
