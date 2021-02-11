@@ -56,4 +56,10 @@ router.patch(
   authController.activateAccount
 )
 
+router.get(
+  '/dashboard/profile',
+  authMiddleware.authCheck,
+  authController.getUserDetails
+)
+
 module.exports = router
