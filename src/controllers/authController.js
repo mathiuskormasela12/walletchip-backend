@@ -84,7 +84,7 @@ exports.register = async (req, res) => {
   if (isUserNameExists.length < 1 && isEmailExists.length < 1) {
     const salt = await bcrypt.genSalt()
     const encryptedPassword = await bcrypt.hash(password, salt)
-    const createUser = await userModel.createUserAsync({ verified: false, username, email, password: encryptedPassword })
+    const createUser = await userModel.createUserAsync({ verified: 0, username, email, password: encryptedPassword })
     if (createUser.insertId > 0) {
       const { insertId } = createUser
       mailer(email, 'Link activate Walletchip', `<div> <p>'http://127.0.0.1:8080/api/auth/verified/${insertId}'</p> </div>`)
@@ -176,36 +176,13 @@ exports.resetPassword = async (req, res) => {
     const results = await userModel.updateByCondition({ password }, { id, email })
 
     if (!results) {
-      return response(res, 400, false, 'Failed to reset password')
+      return response(res, 400, false, 'Failed to reset password, unknown email or id')
     } else {
       return response(res, 200, false, 'Successfully to reset password')
     }
   } catch (err) {
     console.log(err)
     return response(res, 500, false, 'Failed to reset password, server error')
-  }
-}
-
-exports.resetPassword = async (req, res) => {
-  const {
-    email
-  } = req.body
-
-  const {
-    id
-  } = req.params
-
-  try {
-    const password = await bcrypt.hash(req.body.password, 8)
-    const results = await userModel.updateByCondition({ password }, { id, email })
-
-    if (!results) {
-      return response(res, 400, false, 'Failed to reset password')
-    } else {
-      return response(res, 200, false, 'Successfully to reset password')
-    }
-  } catch (error) {
-    response(res, 500, false, 'Failed to reset password, server error')
   }
 }
 
