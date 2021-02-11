@@ -11,14 +11,6 @@ const authMiddleware = require('../middlewares/auth')
 // init router
 const router = express.Router()
 
-router.patch(
-  '/auth/pin/:id',
-  authMiddleware.isPinEmpty,
-  authMiddleware.isPinNumber,
-  authMiddleware.isLength,
-  authController.createPin
-)
-
 router.post(
   '/auth/register',
   authMiddleware.isFieldsEmpty,
