@@ -83,10 +83,10 @@ exports.register = async (req, res) => {
   if (isUserNameExists.length < 1 && isEmailExists.length < 1) {
     const salt = await bcrypt.genSalt()
     const encryptedPassword = await bcrypt.hash(password, salt)
-    const createUser = await userModel.createUserAsync({ username, email, password: encryptedPassword })
+    const createUser = await userModel.createUserAsync({ verified: false, username, email, password: encryptedPassword })
     if (createUser.insertId > 0) {
       const { insertId } = createUser
-      mailer(email, 'Link activate Walletchip', `<div> <a href='http://127.0.0.1:8080/api/auth/verified/${insertId}'> </div>`)
+      mailer(email, 'Link activate Walletchip', `<div> <p>'http://127.0.0.1:8080/api/auth/verified/${insertId}'</p> </div>`)
       return response(res, 200, true, 'Register Success!')
     } else {
       return response(res, 400, false, 'Register Failed')
@@ -109,10 +109,11 @@ exports.login = async (req, res) => {
     const compare = await bcrypt.compare(password, existingUser[0].password)
     if (compare) {
       const { id, verified } = existingUser[0]
-      if (verified === false) {
+      if (!verified) {
         return response(res, 400, false, 'You must verified your account first')
       }
       const token = jwt.sign({ id }, SECRET)
+      console.log(verified)
       return response(res, 200, true, 'Login successfully', { token })
     }
   }
@@ -120,4 +121,93 @@ exports.login = async (req, res) => {
     success: false,
     message: 'Wrong email or password'
   })
+}
+
+exports.getResetPasswordLink = async (req, res) => {
+  const {
+    email
+  } = req.body
+
+  const {
+    SECRET
+  } = process.env
+
+  try {
+    const results = await userModel.findByCondition({
+      email
+    })
+
+    if (results.length < 1) {
+      return response(res, 400, false, 'Unknown email')
+    } else {
+      const hash = jwt.sign({
+        id: results[0].id,
+        email
+      }, SECRET)
+      mailer(
+        email,
+        'Forgot Password',
+        `<div>
+          <h3>Please click link below to reset your password</h3>
+          <a href="${process.env.REACT_APP_URL}/auth/forgot/reset-password/${hash}">Click Me</a>
+        </div>`
+      )
+
+      return response(res, 200, true, 'Please check your email for reset your password')
+    }
+  } catch (err) {
+    response(res, 500, false, 'Failed to send reset password link, server error')
+    throw new Error(err)
+  }
+}
+
+exports.resetPassword = async (req, res) => {
+  const {
+    email
+  } = req.body
+
+  const {
+    id
+  } = req.params
+
+  try {
+    const password = await bcrypt.hash(req.body.password, 8)
+    const results = await userModel.updateByCondition({ password }, { id, email })
+
+    if (!results) {
+      return response(res, 400, false, 'Failed to reset password')
+    } else {
+      return response(res, 200, false, 'Successfully to reset password')
+    }
+  } catch (error) {
+    response(res, 500, false, 'Failed to reset password, server error')
+  }
+}
+
+exports.activateAccount = async (req, res) => {
+  const {
+    id
+  } = req.params
+
+  try {
+    const result = await userModel.findByCondition({ id })
+    if (!result) {
+      return response(res, 400, false, 'Failed to identify ID')
+    } else {
+      try {
+        const updateVerified = await userModel.updateByCondition({ verified: true }, { id })
+        if (!updateVerified) {
+          return response(res, 400, false, 'Failed to activate account')
+        } else {
+          return response(res, 200, true, 'Successfuly to activate account !')
+        }
+      } catch (error) {
+        console.log(error)
+        return response(res, 500, false, 'Failed to activate account, server error')
+      }
+    }
+  } catch (error) {
+    console.log(error)
+    return response(res, 500, false, 'Failed to identify ID, server error')
+  }
 }

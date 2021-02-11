@@ -28,7 +28,7 @@ router.patch(
   authController.changePin
 )
 
-router.patch(
+router.post(
   '/auth/register',
   authMiddleware.isFieldsEmpty,
   authMiddleware.isFieldsLength,
@@ -38,5 +38,22 @@ router.patch(
 router.post(
   '/auth/login',
   authController.login)
+
+router.post(
+  '/auth/password',
+  authMiddleware.checkEmail,
+  authController.getResetPasswordLink
+)
+
+router.patch(
+  '/auth/password/:id',
+  authMiddleware.checkPassword,
+  authController.resetPassword
+)
+
+router.patch(
+  '/auth/verified/:id',
+  authController.activateAccount
+)
 
 module.exports = router

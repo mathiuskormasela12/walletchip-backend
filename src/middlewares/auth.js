@@ -2,6 +2,8 @@
 // import modules
 const response = require('../helpers/response')
 const { check, validationResult, query } = require('express-validator')
+const jwt = require('jsonwebtoken')
+const { SECRET } = process.env
 
 exports.checkId = [
   check('id', "Id can't be empty")
@@ -23,14 +25,56 @@ exports.checkId = [
   }
 ]
 
-const jwt = require('jsonwebtoken')
-const { APP_KEY } = process.env
+exports.isPinEmpty = [
+  check('pin', "Pin can't be empty")
+    .notEmpty(),
+  (req, res, next) => {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+      return response(res, 400, false, errors.array()[0].msg)
+    }
+
+    return next()
+  }
+]
+
+exports.isLength = [
+  check('pin', 'Pin length must be 6 digits')
+    .isLength({
+      min: 6,
+      max: 6
+    }),
+  (req, res, next) => {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+      return response(res, 400, false, errors.array()[0].msg)
+    }
+
+    return next()
+  }
+]
+
+exports.isPinNumber = [
+  check('pin', 'Pin must be a number')
+    .isNumeric(),
+  (req, res, next) => {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+      return response(res, 400, false, errors.array()[0].msg)
+    }
+
+    return next()
+  }
+]
 
 exports.authCheck = (req, res, next) => {
   const { authorization } = req.headers
   if (authorization && authorization.startsWith('Bearer')) {
     const token = authorization.substr(7)
-    const data = jwt.verify(token, APP_KEY)
+    const data = jwt.verify(token, SECRET)
     if (data) {
       req.userData = data
       return next()
@@ -73,6 +117,44 @@ exports.isFieldsLength = [
     .isLength({
       min: 6
     }),
+  (req, res, next) => {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+      return response(res, 400, false, errors.array()[0].msg)
+    }
+
+    return next()
+  }
+]
+
+exports.checkPassword = [
+  check('password', "Password can't be empty")
+    .notEmpty(),
+  check('email', "Email can't be empty")
+    .notEmpty(),
+  check('email', 'Incorrect email')
+    .isEmail(),
+  check('password', 'Password length min 6 character')
+    .isLength({
+      min: 6
+    }),
+  (req, res, next) => {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+      return response(res, 400, false, errors.array()[0].msg)
+    }
+
+    return next()
+  }
+]
+
+exports.checkEmail = [
+  check('email', "Email can't be empty")
+    .notEmpty(),
+  check('email', 'Incorrect email')
+    .isEmail(),
   (req, res, next) => {
     const errors = validationResult(req)
 
