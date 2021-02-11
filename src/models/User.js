@@ -58,6 +58,61 @@ class User extends Database {
       })
     })
   }
+
+  getUserCount () {
+    const sql = `SELECT COUNT('email') FROM ${this.table}`
+
+    return new Promise((resolve, reject) => {
+      this.db.query(sql, (err, results) => {
+        if (err) {
+          return reject(err)
+        } else {
+          return resolve(results[0]["COUNT('email')"])
+        }
+      })
+    })
+  }
+
+  getUserCountSearch (data) {
+    const sql = `SELECT COUNT('email') FROM ${this.table}
+                 WHERE username LIKE '%${data.keyword}%' OR
+                 email LIKE '%${data.keyword}%' OR
+                 phone LIKE '%${data.keyword}%' 
+                 ORDER BY ${data.by} ${data.sort}
+                `
+
+    return new Promise((resolve, reject) => {
+      this.db.query(sql, (err, results) => {
+        if (err) {
+          return reject(err)
+        } else {
+          return resolve(results[0]["COUNT('email')"])
+        }
+      })
+    })
+  }
+
+  findAll (data) {
+    const sql = `SELECT id, email, first_name, 
+                 last_name, username, phone, 
+                 picture FROM ${this.table}
+                 WHERE username LIKE '%${data.keyword}%' OR
+                 email LIKE '%${data.keyword}%' OR
+                 phone LIKE '%${data.keyword}%' 
+                 ORDER BY ${data.by} ${data.sort}
+                 LIMIT ${data.offset}, ${data.limit}
+                `
+
+    return new Promise((resolve, reject) => {
+      this.db.query(sql, (err, results) => {
+        if (err) {
+          return reject(err)
+        } else {
+          return resolve(results)
+        }
+      })
+    })
+  }
 }
 
 module.exports = new User('users')
