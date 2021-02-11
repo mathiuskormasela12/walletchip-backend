@@ -44,6 +44,14 @@ exports.checkPassword = [
     .notEmpty(),
   check('password', "Password can't be empty")
     .notEmpty(),
+  check('password', 'Password length min 6 character')
+    .isLength({
+      min: 6
+    }),
+  check('repeatPassword', 'Repeat password length min 6 character')
+    .isLength({
+      min: 6
+    }),
   check('repeatPassword', "Repeat password can't be empty")
     .notEmpty()
     .custom((val, { req }) => {
