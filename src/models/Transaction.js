@@ -9,8 +9,8 @@ class User extends Database {
   getUserTransactionHistory (id) {
     return new Promise((resolve, reject) => {
       this.db.query(`
-      SELECT users1.username AS me,
-      users2.username AS people,
+      SELECT users1.username AS user,
+      users2.username AS another_user,
       transactions.is_transfer,
       transactions.amount
       FROM transactions INNER JOIN
