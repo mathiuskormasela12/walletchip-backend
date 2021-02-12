@@ -14,6 +14,7 @@ const router = express.Router()
 
 router.get(
   '/user',
+  authMiddleware.authCheck,
   userMiddleware.isGetUsersListValid,
   userController.getAllUsers
 )
@@ -23,6 +24,13 @@ router.patch(
   authMiddleware.authCheck,
   userMiddleware.checkResetPassword,
   userController.resetPassword
+)
+
+router.patch(
+  '/user/:id',
+  authMiddleware.authCheck,
+  userMiddleware.checkEditProfile,
+  userController.editProfile
 )
 
 module.exports = router

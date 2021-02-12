@@ -1,6 +1,6 @@
 // ===== User Middleware
 // import modules
-const { validationResultl, check, param, validationResult } = require('express-validator')
+const { check, param, validationResult } = require('express-validator')
 const response = require('../helpers/response')
 const config = require('../config/config')
 
@@ -44,6 +44,32 @@ exports.checkResetPassword = [
     .isLength({
       min: 6
     }),
+  (req, res, next) => {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+      return response(res, 400, false, errors.array()[0].msg)
+    }
+
+    return next()
+  }
+]
+
+exports.checkEditProfile = [
+  param('id', 'Id must be an integer')
+    .isInt(),
+  check('firstName', "First name can't be empty")
+    .notEmpty(),
+  check('lastName', "Last name can't be empty")
+    .notEmpty(),
+  check('email', "Email can't be empty")
+    .notEmpty(),
+  check('phone', "Phone number can't be empty")
+    .notEmpty(),
+  check('email', 'Incorrect email')
+    .isEmail(),
+  check('phone', 'Incorrect phone number')
+    .isMobilePhone(),
   (req, res, next) => {
     const errors = validationResult(req)
 

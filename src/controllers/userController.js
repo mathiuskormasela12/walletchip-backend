@@ -100,3 +100,7 @@ exports.resetPassword = async (req, res) => {
     return response(res, 500, false, 'Failed to reset password, server error')
   }
 }
+
+exports.editProfile = async (req, res) => {
+
+}
