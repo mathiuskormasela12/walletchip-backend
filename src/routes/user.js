@@ -1,6 +1,7 @@
 // ======== Server
 // import all modules
 const express = require('express')
+const upload = require('../helpers/upload')
 
 // import all controllers
 const userController = require('../controllers/userController')
@@ -31,6 +32,14 @@ router.patch(
   authMiddleware.authCheck,
   userMiddleware.checkEditProfile,
   userController.editProfile
+)
+
+router.patch(
+  '/user/picture/:id',
+  authMiddleware.authCheck,
+  userMiddleware.checkUploadFile,
+  upload,
+  userController.upload
 )
 
 module.exports = router

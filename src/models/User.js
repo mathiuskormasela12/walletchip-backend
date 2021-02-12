@@ -90,8 +90,11 @@ class User extends Database {
     })
   }
 
-  getUserCount () {
-    const sql = `SELECT COUNT('email') FROM ${this.table} WHERE verified = 1`
+  getUserCount (id) {
+    const sql = `SELECT COUNT('email') 
+                 FROM ${this.table} 
+                 WHERE verified = 1
+                 AND id != ${id}`
 
     return new Promise((resolve, reject) => {
       this.db.query(sql, (err, results) => {
@@ -106,10 +109,11 @@ class User extends Database {
 
   getUserCountSearch (data) {
     const sql = `SELECT COUNT('email') FROM ${this.table}
-                 WHERE verified = 1 AND
-                 username LIKE '%${data.keyword}%' OR
+                 WHERE (verified = 1) AND
+                 (id != ${data.id}) AND
+                 (username LIKE '%${data.keyword}%' OR
                  email LIKE '%${data.keyword}%' OR
-                 phone LIKE '%${data.keyword}%' 
+                 phone LIKE '%${data.keyword}%' )
                  ORDER BY ${data.by} ${data.sort}
                 `
 
@@ -128,9 +132,11 @@ class User extends Database {
     const sql = `SELECT id, email, first_name, 
                  last_name, username, phone, 
                  picture FROM ${this.table}
-                 WHERE username LIKE '%${data.keyword}%' OR
+                 WHERE (verified = 1) AND
+                 (id != ${data.id}) AND
+                 (username LIKE '%${data.keyword}%' OR
                  email LIKE '%${data.keyword}%' OR
-                 phone LIKE '%${data.keyword}%' 
+                 phone LIKE '%${data.keyword}%') 
                  ORDER BY ${data.by} ${data.sort}
                  LIMIT ${data.offset}, ${data.limit}
                 `

@@ -1,6 +1,7 @@
 // ==== import module
 const response = require('../helpers/response')
 const bcrypt = require('bcryptjs')
+const deleteFile = require('../helpers/deleteFile')
 
 // ===== import models
 const userModel = require('../models/User')
@@ -20,13 +21,14 @@ exports.getAllUsers = async (req, res) => {
 
   try {
     const startData = (limit * page) - limit
-    const totalData = await userModel.getUserCount()
+    const totalData = await userModel.getUserCount(req.userData.id)
     const totalDataSearch = await userModel.getUserCountSearch({
       keyword: search,
       sort,
       offset: startData,
       limit,
-      by
+      by,
+      id: req.userData.id
     })
     const totalPages = Math.ceil(totalData / limit)
 
@@ -36,7 +38,8 @@ exports.getAllUsers = async (req, res) => {
         sort,
         offset: startData,
         limit,
-        by
+        by,
+        id: req.userData.id
       })
 
       const modifiedTotalData = req.query.search ? totalDataSearch : totalData
@@ -142,5 +145,43 @@ exports.editProfile = async (req, res) => {
   } catch (err) {
     console.log(err)
     return response(res, 500, false, 'Failed to edit profile, server error')
+  }
+}
+
+exports.upload = async (req, res) => {
+  const {
+    file: {
+      filename: picture
+    }
+  } = req
+
+  const { id } = req.params
+
+  try {
+    const isExists = await userModel.findByCondition({ id })
+
+    if (isExists.length < 1) {
+      deleteFile(picture)
+      return response(res, 400, false, 'Failed to upload file, unknown user id')
+    } else {
+      try {
+        const updatePicture = await userModel.updateByCondition({ picture }, { id })
+
+        if (!updatePicture) {
+          deleteFile(picture)
+          return response(res, 400, false, 'Failed to upload file, unknown user id')
+        } else {
+          return response(res, 200, true, 'Success to upload file')
+        }
+      } catch (err) {
+        deleteFile(picture)
+        console.log(err)
+        return response(res, 500, false, 'Failed to upload file, server error')
+      }
+    }
+  } catch (err) {
+    deleteFile(picture)
+    console.log(err)
+    return response(res, 500, false, 'Failed to upload file, server error')
   }
 }

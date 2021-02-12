@@ -85,3 +85,26 @@ exports.checkEditProfile = [
     return next()
   }
 ]
+
+exports.checkUploadFile = [
+  param('id', 'Id must be an integer')
+    .isInt(),
+  (req, res, next) => {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+      return response(res, 400, false, errors.array()[0].msg)
+    }
+
+    return next()
+  }
+]
+
+exports.isUpload = (req, res, next) => {
+  console.log(req)
+  if (!req.file) {
+    return response(res, 400, false, 'You must upload file')
+  }
+
+  return next()
+}
