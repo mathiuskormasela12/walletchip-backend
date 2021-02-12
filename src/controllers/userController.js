@@ -1,5 +1,6 @@
 // ==== import module
 const response = require('../helpers/response')
+const bcrypt = require('bcryptjs')
 
 // ===== import models
 const userModel = require('../models/User')
@@ -57,5 +58,45 @@ exports.getAllUsers = async (req, res) => {
   } catch (err) {
     console.log(err)
     return response(res, 500, false, 'Failed to get user count, server error')
+  }
+}
+
+exports.resetPassword = async (req, res) => {
+  const {
+    currentPassword,
+    newPassword
+  } = req.body
+
+  const {
+    id
+  } = req.params
+
+  try {
+    const isExists = await userModel.findByCondition({ id })
+
+    if (isExists.length < 1) {
+      return response(res, 400, false, 'Failed to reset password, unknown id')
+    } else {
+      if (!(await bcrypt.compare(currentPassword, isExists[0].password))) {
+        return response(res, 400, false, 'Wrong password')
+      } else {
+        try {
+          const password = await bcrypt.hash(newPassword, 8)
+          const results = await userModel.updateByCondition({ password }, { id })
+
+          if (!results) {
+            return response(res, 400, false, 'Failed to reset password, unknown email or id')
+          } else {
+            return response(res, 200, false, 'Successfully to reset password')
+          }
+        } catch (err) {
+          console.log(err)
+          return response(res, 500, false, 'Failed to reset password, server error')
+        }
+      }
+    }
+  } catch (err) {
+    console.log(err)
+    return response(res, 500, false, 'Failed to reset password, server error')
   }
 }

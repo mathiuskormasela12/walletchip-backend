@@ -1,5 +1,6 @@
 // ===== User Middleware
 // import modules
+const { validationResultl, check, param, validationResult } = require('express-validator')
 const response = require('../helpers/response')
 const config = require('../config/config')
 
@@ -27,3 +28,29 @@ exports.isGetUsersListValid = (req, res, next) => {
 
   return next()
 }
+
+exports.checkResetPassword = [
+  param('id', 'Id must be an integer')
+    .isInt(),
+  check('currentPassword', "Current password can't be empty")
+    .notEmpty(),
+  check('newPassword', "New password can't be empty")
+    .notEmpty(),
+  check('currentPassword', 'Current password length min 6 character')
+    .isLength({
+      min: 6
+    }),
+  check('newPassword', 'New password length min 6 character')
+    .isLength({
+      min: 6
+    }),
+  (req, res, next) => {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+      return response(res, 400, false, errors.array()[0].msg)
+    }
+
+    return next()
+  }
+]
