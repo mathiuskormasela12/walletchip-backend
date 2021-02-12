@@ -38,12 +38,12 @@ const corsOptions = {
 }
 app.use(cors(corsOptions))
 
-// setup static file
-app.use(express.static(path.join(__dirname, './public')))
-
 // setup bodyparser
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
+
+// setup static file
+app.use(express.static(path.join(__dirname, './uploads')))
 
 app.use('/api', require('./src/routes/auth'))
 app.use('/api', require('./src/routes/user'))
