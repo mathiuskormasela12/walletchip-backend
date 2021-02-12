@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs')
 const userModel = require('../models/User')
 
 const {
-  APP_URL
+  FILE_URL
 } = process.env
 
 exports.getAllUsers = async (req, res) => {
@@ -47,7 +47,7 @@ exports.getAllUsers = async (req, res) => {
       } else {
         const modifiedResults = results.map(item => ({
           ...item,
-          picture: APP_URL.concat(`/uploads/${item.picture}`)
+          picture: FILE_URL.concat(`/${item.picture}`)
         }))
         return response(res, 200, true, 'Successfully to get all users', modifiedResults, modifiedTotalData, modifiedTotalPage, page, req)
       }
