@@ -16,12 +16,12 @@ exports.createTransfer = async (req, res) => {
   } = req.body
 
   const {
-    id: senderId
+    id: userId
   } = req.userData
 
   try {
     const pinHashed = await usersModel.findByCondition({
-      id: senderId
+      id: userId
     })
 
     if (!(await bcrypt.compare(pin, pinHashed[0].pin))) {
@@ -29,7 +29,7 @@ exports.createTransfer = async (req, res) => {
     } else {
       try {
         const pastBalanceSender = await usersModel.findByCondition({
-          id: senderId
+          id: userId
         })
 
         const pastBalanceReceiver = await usersModel.findByCondition({
@@ -50,7 +50,7 @@ exports.createTransfer = async (req, res) => {
 
           try {
             const transferSender = await usersModel.updateByCondition({ balance: balanceMin }, {
-              id: senderId
+              id: userId
             })
             const transferReceiver = await usersModel.updateByCondition({ balance: balanceMax }, {
               id: receiverId
@@ -66,7 +66,7 @@ exports.createTransfer = async (req, res) => {
                     transactionDate,
                     note,
                     amount,
-                    sender_id: senderId,
+                    user_id: userId,
                     is_transfer: 1
                   },
                   {
@@ -74,7 +74,7 @@ exports.createTransfer = async (req, res) => {
                     transactionDate,
                     note,
                     amount,
-                    sender_id: senderId,
+                    user_id: userId,
                     is_transfer: 0
                   }
                 ]
