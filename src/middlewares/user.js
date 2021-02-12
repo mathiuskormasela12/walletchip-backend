@@ -1,6 +1,6 @@
 // ===== User Middleware
 // import modules
-const { validationResultl, check, param, validationResult } = require('express-validator')
+const { check, param, validationResult } = require('express-validator')
 const response = require('../helpers/response')
 const config = require('../config/config')
 
