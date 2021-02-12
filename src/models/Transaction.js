@@ -17,6 +17,7 @@ class User extends Database {
       users users1 ON users1.id = transactions.user_id
       INNER JOIN users users2 ON users2.id = transactions.receiver_id
       WHERE transactions.user_id = ${id}
+      ORDER BY transactionDate DESC
     `, (err, res, field) => {
         if (err) reject(err)
         resolve(res)
