@@ -68,8 +68,13 @@ exports.checkEditProfile = [
     .notEmpty(),
   check('email', 'Incorrect email')
     .isEmail(),
-  check('phone', 'Incorrect phone number')
-    .isMobilePhone(),
+  check('phone').custom((value, { req }) => {
+    if (value.match(/[^0-9-+]/gi)) {
+      throw new Error('Incorrect phone number')
+    }
+
+    return value
+  }),
   (req, res, next) => {
     const errors = validationResult(req)
 

@@ -102,5 +102,45 @@ exports.resetPassword = async (req, res) => {
 }
 
 exports.editProfile = async (req, res) => {
+  const {
+    id
+  } = req.params
 
+  const {
+    firstName,
+    lastName,
+    email,
+    phone
+  } = req.body
+
+  try {
+    const isUserExists = await userModel.findByCondition({ id })
+
+    if (isUserExists.length < 1) {
+      return response(res, 400, false, 'Failed to edit profile, unknown user id')
+    } else {
+      try {
+        const updateProfile = await userModel.updateByCondition({
+          first_name: firstName,
+          last_name: lastName,
+          email: email,
+          phone
+        }, { id })
+
+        if (!updateProfile) {
+          return response(res, 400, false, 'Failed to edit profile')
+        } else {
+          return response(res, 200, true, 'Successfully to edit profile', {
+            ...req.body
+          })
+        }
+      } catch (err) {
+        console.log(err)
+        return response(res, 500, false, 'Failed to edit profile, server error')
+      }
+    }
+  } catch (err) {
+    console.log(err)
+    return response(res, 500, false, 'Failed to edit profile, server error')
+  }
 }
