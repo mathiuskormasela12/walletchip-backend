@@ -17,4 +17,10 @@ router.get(
   transactionController.getUserTransactionHistory
 )
 
+router.get(
+  '/transaction-summary',
+  authMiddleware.authCheck,
+  transactionController.getUserTransactionSummary
+)
+
 module.exports = router

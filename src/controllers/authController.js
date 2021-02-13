@@ -211,23 +211,3 @@ exports.activateAccount = async (req, res) => {
     return response(res, 500, false, 'Failed to identify ID, server error')
   }
 }
-
-//
-
-exports.getUserDetails = async (req, res) => {
-  const userID = req.userData.id
-  console.log(userID)
-
-  try {
-    const results = await userModel.getUsersByIdAsync(userID)
-
-    if (results.length < 1) {
-      return response(res, 400, false, 'Unknown user')
-    } else {
-      return response(res, 200, true, 'User details', ...results)
-    }
-  } catch (err) {
-    response(res, 400, false, 'Failed to get user details')
-    throw new Error(err)
-  }
-}

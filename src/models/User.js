@@ -100,6 +100,21 @@ class User extends Database {
       })
     })
   }
+
+  updateUserDetails (id, data) {
+    const key = Object.keys(data)
+    const value = Object.values(data)
+    return new Promise((resolve, reject) => {
+      this.db.query(`
+      UPDATE ${this.table}
+      SET ${key.map((item, index) => `${item}="${value[index]}"`)}
+      WHERE id=${id}
+    `, (err, res, field) => {
+        if (err) reject(err)
+        resolve(res)
+      })
+    })
+  }
 }
 
 module.exports = new User('users')
