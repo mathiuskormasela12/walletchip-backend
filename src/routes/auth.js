@@ -22,6 +22,7 @@ router.post(
 
 router.patch(
   '/auth/pin/:id',
+  authMiddleware.authCheck,
   authMiddleware.isPinEmpty,
   authMiddleware.isPinNumber,
   authMiddleware.isLength,
@@ -39,6 +40,11 @@ router.post(
   '/auth/login',
   authController.login)
 
+router.patch(
+  '/auth/verified/:id',
+  authController.activateAccount
+)
+
 router.post(
   '/auth/password',
   authMiddleware.checkEmail,
@@ -49,11 +55,6 @@ router.patch(
   '/auth/password/:id',
   authMiddleware.checkPassword,
   authController.resetPassword
-)
-
-router.patch(
-  '/auth/verified/:id',
-  authController.activateAccount
 )
 
 module.exports = router

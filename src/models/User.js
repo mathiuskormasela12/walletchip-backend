@@ -101,6 +101,43 @@ class User extends Database {
     })
   }
 
+  getUserCount (id) {
+    const sql = `SELECT COUNT('email') 
+                 FROM ${this.table} 
+                 WHERE verified = 1
+                 AND id != ${id}`
+
+    return new Promise((resolve, reject) => {
+      this.db.query(sql, (err, results) => {
+        if (err) {
+          return reject(err)
+        } else {
+          return resolve(results[0]["COUNT('email')"])
+        }
+      })
+    })
+  }
+
+  getUserCountSearch (data) {
+    const sql = `SELECT COUNT('email') FROM ${this.table}
+                 WHERE (verified = 1) AND
+                 (id != ${data.id}) AND
+                 (username LIKE '%${data.keyword}%' OR
+                 email LIKE '%${data.keyword}%' OR
+                 phone LIKE '%${data.keyword}%' )
+                 ORDER BY ${data.by} ${data.sort}
+                `
+    return new Promise((resolve, reject) => {
+      this.db.query(sql, (err, results) => {
+        if (err) {
+          return reject(err)
+        } else {
+          return resolve(results[0]["COUNT('email')"])
+        }
+      })
+    })
+  }
+
   updateUserDetails (id, data) {
     const key = Object.keys(data)
     const value = Object.values(data)
@@ -112,6 +149,30 @@ class User extends Database {
     `, (err, res, field) => {
         if (err) reject(err)
         resolve(res)
+      })
+    })
+  }
+
+  findAll (data) {
+    const sql = `SELECT id, email, first_name, 
+                 last_name, username, phone, 
+                 picture FROM ${this.table}
+                 WHERE (verified = 1) AND
+                 (id != ${data.id}) AND
+                 (username LIKE '%${data.keyword}%' OR
+                 email LIKE '%${data.keyword}%' OR
+                 phone LIKE '%${data.keyword}%') 
+                 ORDER BY ${data.by} ${data.sort}
+                 LIMIT ${data.offset}, ${data.limit}
+                `
+
+    return new Promise((resolve, reject) => {
+      this.db.query(sql, (err, results) => {
+        if (err) {
+          return reject(err)
+        } else {
+          return resolve(results)
+        }
       })
     })
   }

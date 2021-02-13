@@ -1,3 +1,4 @@
+// ===== Mailer
 const mailer = require('nodemailer')
 const smtpTransport = require('nodemailer-smtp-transport')
 const config = require('../config/config')

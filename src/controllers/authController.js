@@ -1,9 +1,9 @@
 // ==== import module
 const bcrypt = require('bcryptjs')
-const response = require('../helpers/response')
 const jwt = require('jsonwebtoken')
-const { SECRET } = process.env
 const mailer = require('../helpers/mailer')
+const response = require('../helpers/response')
+const { SECRET, REACT_APP_URL } = process.env
 
 // ===== import models
 const userModel = require('../models/User')
@@ -35,18 +35,18 @@ exports.createPin = async (req, res) => {
               return response(res, 200, true, 'Success to create pin')
             }
           } catch (err) {
-            response(res, 500, false, 'Failed to create pin, server error')
-            throw new Error(err)
+            console.log(err)
+            return response(res, 500, false, 'Failed to create pin, server error')
           }
         }
       } catch (err) {
-        response(res, 500, false, 'Failed to create pin, server error')
-        throw new Error(err)
+        console.log(err)
+        return response(res, 500, false, 'Failed to create pin, server error')
       }
     }
   } catch (err) {
-    response(res, 500, false, 'Failed to create pin, server error')
-    throw new Error(err)
+    console.log(err)
+    return response(res, 500, false, 'Failed to create pin, server error')
   }
 }
 
@@ -67,7 +67,8 @@ exports.changePin = async (req, res) => {
           return response(res, 200, true, 'Success to change pin')
         }
       } catch (err) {
-        response(res, 500, false, 'Failed to change pin, server error')
+        console.log(err)
+        return response(res, 500, false, 'Failed to change pin, server error')
       }
     }
   } catch (err) {
@@ -83,10 +84,11 @@ exports.register = async (req, res) => {
   if (isUserNameExists.length < 1 && isEmailExists.length < 1) {
     const salt = await bcrypt.genSalt()
     const encryptedPassword = await bcrypt.hash(password, salt)
-    const createUser = await userModel.createUserAsync({ verified: false, username, email, password: encryptedPassword })
+    const createUser = await userModel.createUserAsync({ verified: 0, username, email, password: encryptedPassword })
     if (createUser.insertId > 0) {
       const { insertId } = createUser
-      mailer(email, 'Link activate Walletchip', `<div> <p>'http://127.0.0.1:8080/api/auth/verified/${insertId}'</p> </div>`)
+      const token = jwt.sign({ insertId }, SECRET)
+      mailer(email, 'Link activate Walletchip', `<div> <p>'${REACT_APP_URL}/auth/activated/${token}'</p> </div>`)
       return response(res, 200, true, 'Register Success!')
     } else {
       return response(res, 400, false, 'Register Failed')
@@ -156,8 +158,8 @@ exports.getResetPasswordLink = async (req, res) => {
       return response(res, 200, true, 'Please check your email for reset your password')
     }
   } catch (err) {
-    response(res, 500, false, 'Failed to send reset password link, server error')
-    throw new Error(err)
+    console.log(err)
+    return response(res, 500, false, 'Failed to send reset password link, server error')
   }
 }
 
@@ -175,12 +177,13 @@ exports.resetPassword = async (req, res) => {
     const results = await userModel.updateByCondition({ password }, { id, email })
 
     if (!results) {
-      return response(res, 400, false, 'Failed to reset password')
+      return response(res, 400, false, 'Failed to reset password, unknown email or id')
     } else {
-      return response(res, 200, false, 'Successfully to reset password')
+      return response(res, 200, true, 'Successfully to reset password')
     }
-  } catch (error) {
-    response(res, 500, false, 'Failed to reset password, server error')
+  } catch (err) {
+    console.log(err)
+    return response(res, 500, false, 'Failed to reset password, server error')
   }
 }
 
