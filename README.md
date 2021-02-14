@@ -38,4 +38,6 @@ This is backend app written in Javascript Stack. Backend app theme is "Walletchi
 - POST `/api/auth/currentPin` Route for compare pin (body -> id, pin)
 
 ## App Flow
-You can see the flow of application on Flowchart-Walletchip.drawio
+![alt text](https://github.com/mathiuskormasela12/walletchip-backend/tree/staging/flowchart-authentication.png?raw=true)
+![alt text](https://github.com/mathiuskormasela12/walletchip-backend/tree/staging/flowchart-transaction.png?raw=true)
+![alt text](https://github.com/mathiuskormasela12/walletchip-backend/tree/staging/flowchart-update_profile.png?raw=true)
