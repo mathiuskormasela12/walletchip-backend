@@ -3,7 +3,7 @@ This is backend app written in Javascript Stack. Backend app theme is "Walletchi
 
 ## Requirements
 - NodeJS v14 LTS
-- MySQ
+- MySQL
 
 ## How To Run This App
 
