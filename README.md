@@ -34,3 +34,4 @@ This is backend app written in Javascript Stack. Backend app theme is "Walletchi
 - POST `/api/transfer` Route for transfer balance (body -> amount, transactionDate, note, pin & receiverId)
 - PATCH `/api/user/:userId` Route for edit user profile (body -> firstName, lastName, email, phone)
 - PATCH `/api/user/password/:userId` Route for change user password (body -> currentPassword, newPassword)
+- POST `/api/auth/currentPin` Route for compare pin (body -> id, pin)

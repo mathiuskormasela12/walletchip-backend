@@ -134,7 +134,7 @@ exports.createTransfer = async (req, res) => {
                     const receiverData = await usersModel.findByCondition({
                       id: receiverId
                     })
-                    return response(res, 200, false, 'Transfer Success', {
+                    return response(res, 200, true, 'Transfer Success', {
                       id: insertTransaction,
                       ...req.body,
                       phone: receiverData[0].phone,
