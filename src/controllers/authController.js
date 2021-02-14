@@ -88,7 +88,7 @@ exports.register = async (req, res) => {
     if (createUser.insertId > 0) {
       const { insertId } = createUser
       const token = jwt.sign({ insertId }, SECRET)
-      mailer(email, 'Link activate Walletchip', `<div> <p>'${REACT_APP_URL}/auth/activated/${token}'</p> </div>`)
+      mailer(email, 'Link activate Walletchip', `<div> <p>'${REACT_APP_URL}/auth/create-pin/${token}'</p> </div>`)
       return response(res, 200, true, 'Register Success!')
     } else {
       return response(res, 400, false, 'Register Failed')
