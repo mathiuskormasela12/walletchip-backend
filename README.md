@@ -1,4 +1,4 @@
-# Wallchip Web Service With Express Js & MySQL
+# Walletchip Web Service With Express Js & MySQL
 This is backend app written in Javascript Stack. Backend app theme is "Walletchip"
 
 ## Requirements
