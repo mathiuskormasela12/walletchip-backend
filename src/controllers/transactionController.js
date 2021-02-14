@@ -117,11 +117,11 @@ exports.createTransfer = async (req, res) => {
                     is_transfer: 1
                   },
                   {
-                    receiver_id: receiverId,
+                    receiver_id: userId,
                     transactionDate,
                     note,
                     amount,
-                    user_id: userId,
+                    user_id: receiverId,
                     is_transfer: 0
                   }
                 ]
